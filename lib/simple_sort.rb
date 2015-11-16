@@ -10,11 +10,12 @@ module SimpleSort
       scope :mysql_random, ->{ reorder('RAND()')   }
       scope :psql_random,  ->{ reorder('RANDOM()') }
 
-      scope :max2min, ->(field = :id) { reorder("#{ field } DESC") if field && self.columns.map(&:name).include?(field.to_s) }
-      scope :min2max, ->(field = :id) { reorder("#{ field } ASC")  if field && self.columns.map(&:name).include?(field.to_s) }
-
-      scope :recent, ->(field = :id) { reorder("#{ field } DESC") if field && self.columns.map(&:name).include?(field.to_s) }
-      scope :old,    ->(field = :id) { reorder("#{ field } ASC")  if field && self.columns.map(&:name).include?(field.to_s) }
+      scope :max2min, ->(field = :id) {
+        reorder("#{ table_name }.#{ field } DESC") if field && self.columns.map(&:name).include?(field.to_s)
+      }
+      scope :min2max, ->(field = :id) {
+        reorder("#{ table_name }.#{ field } ASC")  if field && self.columns.map(&:name).include?(field.to_s)
+      }
 
       scope :simple_sort, ->(params, default_sort_field = nil){
         sort_column = params[:sort_column]
