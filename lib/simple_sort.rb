@@ -21,10 +21,10 @@ module SimpleSort
         sort_column = params[:sort_column]
         sort_type   = params[:sort_type]
 
-        return recent(default_sort_field) unless sort_column
-        return recent(sort_column)        unless sort_type
+        return max2min(default_sort_field) unless sort_column
+        return max2min(sort_column)        unless sort_type
 
-        sort_type.downcase == 'asc' ? recent(sort_column) : old(sort_column)
+        sort_type.downcase == 'asc' ? max2min(sort_column) : min2max(sort_column)
       }
     end
   end
