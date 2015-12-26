@@ -30,8 +30,9 @@ module SimpleSort
         return nil if fields.blank?
 
         fields  = ss_available_fields_filter( fields )
-        sql_str = ss_table_field_order_sql( fields )
+        return nil if fields.blank?
 
+        sql_str = ss_table_field_order_sql( fields )
         reorder("#{ sql_str } DESC")
       }
 
@@ -40,8 +41,9 @@ module SimpleSort
         return nil if fields.blank?
 
         fields  = ss_available_fields_filter( fields )
-        sql_str = ss_table_field_order_sql( fields )
+        return nil if fields.blank?
 
+        sql_str = ss_table_field_order_sql( fields )
         reorder("#{ sql_str } ASC")
       }
 
