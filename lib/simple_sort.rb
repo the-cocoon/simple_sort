@@ -22,9 +22,11 @@ module SimpleSort
     end
 
     included do
+      # random
       scope :mysql_random, ->{ reorder('RAND()')   }
       scope :psql_random,  ->{ reorder('RANDOM()') }
 
+      # with fields checking
       scope :max2min, ->(fields = [:id]) {
         fields  = Array.wrap fields
         return nil if fields.blank?
@@ -35,7 +37,6 @@ module SimpleSort
         sql_str = ss_table_field_order_sql( fields )
         reorder("#{ sql_str } DESC")
       }
-
       scope :min2max, ->(fields = [:id]) {
         fields  = Array.wrap fields
         return nil if fields.blank?
@@ -46,7 +47,6 @@ module SimpleSort
         sql_str = ss_table_field_order_sql( fields )
         reorder("#{ sql_str } ASC")
       }
-
       scope :simple_sort, ->(params, default_sort_field = nil){
         sort_column = params[:sort_column]
         sort_type   = params[:sort_type]
@@ -55,6 +55,27 @@ module SimpleSort
         return max2min(sort_column)        unless sort_type
 
         sort_type.downcase == 'asc' ? max2min(sort_column) : min2max(sort_column)
+      }
+
+      # without fields checking
+      scope :_max2min, ->(fields = [:id]) {
+        fields  = Array.wrap fields
+        return nil if fields.blank?
+        reorder("#{ fields.join(',') } ASC")
+      }
+      scope :_min2max, ->(fields = [:id]) {
+        fields  = Array.wrap fields
+        return nil if fields.blank?
+        reorder("#{ fields.join(',') } DESC")
+      }
+      scope :_simple_sort, ->(params, default_sort_field = nil){
+        sort_column = params[:sort_column]
+        sort_type   = params[:sort_type]
+
+        return _max2min(default_sort_field) unless sort_column
+        return _max2min(sort_column)        unless sort_type
+
+        sort_type.downcase == 'asc' ? _max2min(sort_column) : _min2max(sort_column)
       }
     end
   end
