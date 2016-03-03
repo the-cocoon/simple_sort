@@ -23,6 +23,11 @@ module SimpleSort
 
     included do
       # random
+      scope :random, ->{
+        @adapter_name ||= ActiveRecord::Base.connection.adapter_name
+        (@adapter_name == "PostgreSQL") ? psql_random : mysql_random
+      }
+
       scope :mysql_random, ->{ reorder('RAND()')   }
       scope :psql_random,  ->{ reorder('RANDOM()') }
 
